@@ -111,11 +111,5 @@ define(['mods/meshes/mesh'], function (Mesh) {
         return v3;
     };
 
-    Icosphere.prototype.getVolume = function () {
-        var boxVolume = Mesh.prototype.getVolume.call(this);
-        // todo convert to elipse volume?
-        return boxVolume;
-    };
-
     return Icosphere;
 });

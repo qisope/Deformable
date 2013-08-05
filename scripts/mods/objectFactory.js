@@ -1,4 +1,4 @@
-define(['mods/deformables/deformableSphere'], function (DeformableSphere) {
+define(['mods/deformables/deformableSphere', 'mods/deformables/deformableCube'], function (DeformableSphere, DeformableCube) {
     var factory = function () {
     };
 
@@ -9,8 +9,8 @@ define(['mods/deformables/deformableSphere'], function (DeformableSphere) {
             vertexMass,
             surfaceStiffness, surfaceDamping,
             connectiveStiffness, connectiveDamping,
-            material,
-            pressureConstantOuter, pressureConstantInner) {
+            pressureConstantOuter, pressureConstantInner,
+            material) {
         var sphere = new DeformableSphere(
             outerRadius,
             innerRadius,
@@ -18,9 +18,28 @@ define(['mods/deformables/deformableSphere'], function (DeformableSphere) {
             vertexMass,
             surfaceStiffness, surfaceDamping,
             connectiveStiffness, connectiveDamping,
-            material,
-            pressureConstantOuter, pressureConstantInner);
+            pressureConstantOuter, pressureConstantInner,
+            material);
         return sphere;
+    };
+
+    factory.prototype.createCube = function (
+            outerSize, innerSize,
+            vertexCount,
+            vertexMass,
+            surfaceStiffness, surfaceDamping,
+            connectiveStiffness, connectiveDamping,
+            pressureConstantOuter, pressureConstantInner,
+            material) {
+        var cube = new DeformableCube(
+            outerSize, innerSize,
+            vertexCount,
+            vertexMass,
+            surfaceStiffness, surfaceDamping,
+            connectiveStiffness, connectiveDamping,
+            pressureConstantOuter, pressureConstantInner,
+            material);
+        return cube;
     };
 
     return factory;

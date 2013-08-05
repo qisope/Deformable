@@ -2,30 +2,28 @@ define([
     'mods/deformables/deformableObject',
     'mods/deformables/node',
     'mods/deformables/spring',
-    'mods/meshes/icosphere',
+    'mods/meshes/cube',
     'mods/forces/pressure'],
     function (
         DeformableObject,
         Node,
         Spring,
-        Icosphere,
+        Cube,
         PressureForce) {
 
-        var DeformableSphere = function (
-            outerRadius,
-            innerRadius,
-            refinements,
+        var DeformableCube = function (
+            outerSize, innerSize,
+            vertexCount,
             vertexMass,
             surfaceStiffness, surfaceDamping,
             connectiveStiffness, connectiveDamping,
-            pressureConstantOuter,
-            pressureConstantInner,
+            pressureConstantOuter, pressureConstantInner,
             material) {
             DeformableObject.call(this, surfaceStiffness, surfaceDamping, connectiveStiffness, connectiveDamping);
 
-            this.outerRadius = outerRadius;
-            this.innerRadius = innerRadius;
-            this.refinements = refinements;
+            this.outerSize = outerSize;
+            this.innerSize = innerSize;
+            this.vertexCount = vertexCount;
             this.vertexMass = vertexMass;
             this.surfaceStiffness = surfaceStiffness;
             this.surfaceDamping = surfaceDamping;
@@ -42,11 +40,11 @@ define([
             DeformableObject.prototype.addPressureForce.call(this, pressureForceInner);
         };
 
-        DeformableSphere.prototype = Object.create(DeformableObject.prototype);
+        DeformableCube.prototype = Object.create(DeformableObject.prototype);
 
-        DeformableSphere.prototype.makeDeformable = function () {
-            this.outerMesh = new Icosphere(this.outerRadius, this.refinements);
-            this.innerMesh = new Icosphere(this.innerRadius, this.refinements);
+        DeformableCube.prototype.makeDeformable = function () {
+            this.outerMesh = new Cube(this.outerSize.x, this.outerSize.y, this.outerSize.z, this.vertexCount.x, this.vertexCount.y, this.vertexCount.z);
+            this.innerMesh = new Cube(this.innerSize.x, this.innerSize.y, this.innerSize.z, this.vertexCount.x, this.vertexCount.y, this.vertexCount.z);
 
             this.outerNodes = DeformableObject.prototype.createNodes.call(this, this.outerMesh, this.vertexMass);
             this.innerNodes = DeformableObject.prototype.createNodes.call(this, this.innerMesh, this.vertexMass);
@@ -60,8 +58,8 @@ define([
             var fakeMesh = {vertices: [new THREE.Vector3(0, 0, 0)]};
             var lockedNode = new Node(fakeMesh, 0, 1);
             var face = this.outerMesh.faces[0];
-            var lockedSprings = [new Spring(lockedNode, this.outerNodes[face.c], 800, 10)];
-            fakeMesh.vertices[0].y = 22;
+            var lockedSprings = [new Spring(lockedNode, this.outerNodes[face.a], 1000, 3)];
+            fakeMesh.vertices[0].y = 15;
             //-------
 
             var allNodes = this.outerNodes.concat(this.innerNodes);
@@ -80,7 +78,7 @@ define([
 
         };
 
-        DeformableSphere.prototype.updateRenderMesh = function () {
+        DeformableCube.prototype.updateRenderMesh = function () {
             for (var i = 0, il = this.outerMesh.vertices.length; i < il; i++) {
                 var dataVertex = this.outerMesh.vertices[i];
                 var renderVertex = this.renderMesh.geometry.vertices[i];
@@ -92,5 +90,5 @@ define([
             this.renderMesh.geometry.verticesNeedUpdate = true;
         };
 
-        return DeformableSphere;
+        return DeformableCube;
     });
