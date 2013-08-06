@@ -57,11 +57,10 @@ define([
 
             //------- hackery
 
-            var fakeMesh = {vertices: [new THREE.Vector3(0, 0, 0)]};
+            var fakeMesh = {vertices: [this.outerMesh.vertices[0].clone()]};
             var lockedNode = new Node(fakeMesh, 0, 1);
             var face = this.outerMesh.faces[0];
             var lockedSprings = [new Spring(lockedNode, this.outerNodes[face.c], 800, 10)];
-            fakeMesh.vertices[0].y = 22;
             //-------
 
             var allNodes = this.outerNodes.concat(this.innerNodes);
@@ -90,6 +89,7 @@ define([
             }
 
             this.renderMesh.geometry.verticesNeedUpdate = true;
+            this.renderMesh.geometry.computeBoundingSphere();
         };
 
         return DeformableSphere;

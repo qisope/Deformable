@@ -45,8 +45,6 @@ define(['mods/meshes/mesh'], function (Mesh) {
 
                 this.faces.push(new THREE.Face3(v1, v2, v3));
                 this.faces.push(new THREE.Face3(v1, v3, v4));
-
-                console.log("[" + this.vertices[v1].x + "," + this.vertices[v1].y + "," + this.vertices[v1].z + "]" + "[" + this.vertices[v2].x + "," + this.vertices[v2].y + "," + this.vertices[v2].z + "]" + "[" + this.vertices[v3].x + "," + this.vertices[v3].y + "," + this.vertices[v3].z + "]")
             }
         }
     };
@@ -59,7 +57,6 @@ define(['mods/meshes/mesh'], function (Mesh) {
             this.vertices.push(vertex);
             vi = this.vertices.length - 1;
             vertexCache[key] = vi;
-            console.log(vertex.x + ", " + vertex.y + ", " + vertex.z);
         }
 
         return vi;
