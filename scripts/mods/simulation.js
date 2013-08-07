@@ -12,33 +12,54 @@ define(['jquery'], function ($, World) {
         this.height = $domElement.height();
 
         var that = this;
-        $domElement.on('mousemove', function (event) {
-            that.mouseFar = new THREE.Vector3((event.clientX / that.width) * 2 - 1, 1 - (event.clientY / that.height) * 2, 1);
-        });
+        $domElement.on('mousemove', function (e) { that.onMouseMove(e); });
 
         this.projector = new THREE.Projector();
     };
 
+    Simulation.prototype.onMouseMove = function () {
+        this.mouseFar = new THREE.Vector3((event.clientX / this.width) * 2 - 1, 1 - (event.clientY / this.height) * 2, 1);
+    };
+
+    Simulation.prototype.beforeUpdate = null;
+    Simulation.prototype.afterUpdate = null;
+    Simulation.prototype.hoverObjectChanged = null;
+    Simulation.prototype.processIntersections = null;
+
     Simulation.prototype.run = function () {
-        var instance = this;
+        this.running = true;
+        var that = this;
 
         window.requestAnimationFrame(function renderLoop(timeMs) {
-            window.requestAnimationFrame(renderLoop);
 
-            if (timeMs < 60000) {
-                var frameTimeMs = timeMs - (instance.previousFrameTimeMs || timeMs);
-                instance.previousFrameTimeMs = timeMs;
+            if (that.running) {
+                window.requestAnimationFrame(renderLoop);
 
-                instance.world.step(frameTimeMs / 1000);
+                var frameTimeMs = timeMs - (that.previousFrameTimeMs || timeMs);
+                that.previousFrameTimeMs = timeMs;
 
-                var x = 110 * Math.sin(timeMs / 5000);
-                var z = 110 * Math.cos(timeMs / 5000);
-                instance.world.setCamera(x, 0, z, 0, 0, 0);
+                var t = timeMs / 1000;
+                var td = frameTimeMs / 1000;
 
-                instance.processMouse();
-                instance.world.render();
+                if (that.beforeUpdate) {
+                    that.beforeUpdate(t, td, that.world);
+                };
+
+                that.processMouse();
+                that.world.step(td);
+
+                if (that.afterUpdate) {
+                    that.afterUpdate(t, td, that.world);
+                };
+
+                that.world.render();
             }
         });
+    };
+
+    Simulation.prototype.stop = function () {
+        this.running = false;
+        delete this.previousFrameTimeMs;
     };
 
     Simulation.prototype.processMouse = function () {
@@ -49,23 +70,14 @@ define(['jquery'], function ($, World) {
         var pFar = this.projector.unprojectVector(this.mouseFar.clone(), this.world.camera);
         var direction = pFar.sub(this.world.camera.position).normalize();
         var rc = new THREE.Raycaster(this.world.camera.position, direction);
-        var intersections = rc.intersectObjects(this.world.scene.__objects);
 
-        var newSelection = intersections.length > 0 ? intersections[0].object : null;
+        var newIntersections = rc.intersectObjects(this.world.scene.__objects);
 
-        if (newSelection !== this.selection) {
-            if (this.selection) {
-                this.selection.material.transparent = false;
-                this.selection.material.opacity = 1;
-            }
-
-            this.selection = newSelection;
-
-            if (this.selection) {
-                this.selection.material.transparent = true;
-                this.selection.material.opacity = 0.5;
-            }
+        if (this.processIntersections) {
+            this.processIntersections(this.intersections, newIntersections);
         }
+
+        this.intersections = newIntersections;
     };
 
     return Simulation;

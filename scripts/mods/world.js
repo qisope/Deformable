@@ -18,6 +18,9 @@ define(['mods/integrators/symEuler', 'mods/forces/gravity'], function (SymEuler,
 
         this.objects = [];
         this.forces = [];
+
+        this.gravity = new Gravity(new THREE.Vector3(0, 0, 0));
+        this.forces.push(this.gravity);
     };
 
     World.prototype.getDomElement = function () {
@@ -46,8 +49,7 @@ define(['mods/integrators/symEuler', 'mods/forces/gravity'], function (SymEuler,
     };
 
     World.prototype.setGravity = function (x, y, z) {
-        var gravity = new Gravity(new THREE.Vector3(x, y, z));
-        this.forces.push(gravity);
+        this.gravity.acceleration = new THREE.Vector3(x, y, z);
     };
 
     World.prototype.render = function () {
