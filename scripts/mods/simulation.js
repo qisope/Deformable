@@ -29,29 +29,36 @@ define(['jquery'], function ($, World) {
     Simulation.prototype.run = function () {
         this.running = true;
         var that = this;
+        var stepSizeMs = 6;
+        var lastRemainderMs = 0;
 
         window.requestAnimationFrame(function renderLoop(timeMs) {
 
             if (that.running) {
                 window.requestAnimationFrame(renderLoop);
 
-                var frameTimeMs = timeMs - (that.previousFrameTimeMs || timeMs);
+                var frameTimeMs = timeMs - (that.previousFrameTimeMs || timeMs) + lastRemainderMs;
                 that.previousFrameTimeMs = timeMs;
 
-                var t = timeMs / 1000;
-                var td = frameTimeMs / 1000;
+                var steps = Math.floor(frameTimeMs / stepSizeMs);
+                lastRemainderMs = frameTimeMs % stepSizeMs;
 
-                if (that.beforeUpdate) {
-                    that.beforeUpdate(t, td, that.world);
-                };
+                for (var i=0; i<steps; i++) {
+                    var stepTimeMs = that.previousFrameTimeMs + stepSizeMs*i;
+                    var t = stepTimeMs / 1000;
+                    var td = stepSizeMs / 1000;
 
-                that.processMouse();
-                that.world.step(td);
+                    if (that.beforeUpdate) {
+                        that.beforeUpdate(t, td, that.world);
+                    };
 
-                if (that.afterUpdate) {
-                    that.afterUpdate(t, td, that.world);
-                };
+                    that.processMouse();
+                    that.world.step(td);
 
+                    if (that.afterUpdate) {
+                        that.afterUpdate(t, td, that.world);
+                    };
+                }
                 that.world.render();
             }
         });

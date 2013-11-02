@@ -44,8 +44,8 @@ require(['mods/simulation', 'mods/world', 'mods/objectFactory', 'mods/meshes/cub
     var material1 = new THREE.MeshPhongMaterial({ color: 0xFF0000, wireframe: false, vertexColors: THREE.FaceColors });
     var material2 = new THREE.MeshPhongMaterial({ color: 0x00FF00, wireframe: false, vertexColors: THREE.FaceColors });
 
-    var sphere = objectFactory.createSphere(12, 5, 2, 1.5, 300, 3, 15, 2, 2000, 10000, material1);
-    var cube = objectFactory.createCube({x:20, y:20, z:20}, {x:10, y:10, z:10}, {x:6, y:6, z:6}, 1.2, 400, 4, 45, 2, 5000, 10000, material2);
+    var sphere = objectFactory.createSphere(12, 5, 2, 0.3, 500, 10, 15, 2, 2000, 10000, material1);
+    var cube = objectFactory.createCube({x:20, y:20, z:20}, {x:10, y:10, z:10}, {x:6, y:6, z:6}, 3.0, 400, 10, 85, 20, 5000, 10000, material2);
 
     sphere.renderMesh.position = new THREE.Vector3(-25, 0, 0);
     cube.renderMesh.position = new THREE.Vector3(25, 10, 0);
