@@ -78,7 +78,7 @@ define(['jquery'], function ($, World) {
         var direction = pFar.sub(this.world.camera.position).normalize();
         var rc = new THREE.Raycaster(this.world.camera.position, direction);
 
-        var newIntersections = rc.intersectObjects(this.world.scene.__objects);
+        var newIntersections = rc.intersectObjects(this.world.scene.children, false);
 
         if (this.processIntersections) {
             this.processIntersections(this.intersections, newIntersections);
