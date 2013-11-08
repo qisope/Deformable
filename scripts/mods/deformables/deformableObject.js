@@ -100,6 +100,19 @@ define(['mods/deformables/node', 'mods/deformables/spring'], function (Node, Spr
         this.updateRenderMesh();
     };
 
+    DeformableObject.prototype.updateRenderMesh = function () {
+        for (var i = 0, il = this.outerMesh.vertices.length; i < il; i++) {
+            var dataVertex = this.outerMesh.vertices[i];
+            var renderVertex = this.renderMesh.geometry.vertices[i];
+            renderVertex.x = dataVertex.x;
+            renderVertex.y = dataVertex.y;
+            renderVertex.z = dataVertex.z;
+        }
+
+        this.renderMesh.geometry.verticesNeedUpdate = true;
+        this.renderMesh.geometry.computeBoundingSphere();
+    };
+
     return DeformableObject;
 
 });

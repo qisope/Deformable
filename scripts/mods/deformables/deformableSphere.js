@@ -79,18 +79,5 @@ define([
 
         };
 
-        DeformableSphere.prototype.updateRenderMesh = function () {
-            for (var i = 0, il = this.outerMesh.vertices.length; i < il; i++) {
-                var dataVertex = this.outerMesh.vertices[i];
-                var renderVertex = this.renderMesh.geometry.vertices[i];
-                renderVertex.x = dataVertex.x;
-                renderVertex.y = dataVertex.y;
-                renderVertex.z = dataVertex.z;
-            }
-
-            this.renderMesh.geometry.verticesNeedUpdate = true;
-            this.renderMesh.geometry.computeBoundingSphere();
-        };
-
         return DeformableSphere;
     });
