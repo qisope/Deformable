@@ -21,12 +21,12 @@ define(['jquery'], function ($, World) {
         this.mouseFar = new THREE.Vector3((event.clientX / this.width) * 2 - 1, 1 - (event.clientY / this.height) * 2, 1);
     };
 
-    Simulation.prototype.beforeUpdate = null;
-    Simulation.prototype.afterUpdate = null;
-    Simulation.prototype.hoverObjectChanged = null;
     Simulation.prototype.processIntersections = null;
 
     Simulation.prototype.run = function () {
+        if (this.running)
+            return;
+
         this.running = true;
         var that = this;
         var stepSizeMs = 6;
@@ -43,22 +43,14 @@ define(['jquery'], function ($, World) {
                 var steps = Math.floor(frameTimeMs / stepSizeMs);
                 lastRemainderMs = frameTimeMs % stepSizeMs;
 
+                that.processMouse();
+
                 for (var i=0; i<steps; i++) {
                     var stepTimeMs = that.previousFrameTimeMs + stepSizeMs*i;
-                    var t = stepTimeMs / 1000;
                     var td = stepSizeMs / 1000;
-
-                    if (that.beforeUpdate) {
-                        that.beforeUpdate(t, td, that.world);
-                    };
-
-                    that.processMouse();
                     that.world.step(td);
-
-                    if (that.afterUpdate) {
-                        that.afterUpdate(t, td, that.world);
-                    };
                 }
+
                 that.world.render();
             }
         });
