@@ -68,25 +68,36 @@ define(['mods/integrators/symEuler', 'mods/forces/gravity'], function (SymEuler,
         }
     };
 
-    World.prototype.getInersections = function (vFar) {
-        var pFar = this.projector.unprojectVector(vFar.clone(), this.camera);
-        var direction = pFar.sub(this.camera.position).normalize();
+    World.prototype.getInersections = function (vector) {
+        vector = this.unproject(vector);
+        var direction = vector.sub(this.camera.position).normalize();
         var rc = new THREE.Raycaster(this.camera.position, direction);
 
         var intersections = rc.intersectObjects(this.meshes, false);
-        var result = [];
+        var result = { ray: direction };
+        var intersectionResults = [];
 
         if (intersections && intersections.length) {
             for (var i=0, il=intersections.length; i<il; i++) {
                 var intersection = intersections[i];
                 var object = this.objectsByMeshId[intersection.object.uuid]; // intersection.object is in fact our mesh
                 if (object) {
-                    result.push({ object: object, intersection: intersection });
+                    intersectionResults.push({ object: object, intersection: intersection });
                 }
             }
         }
 
+        result.intersections = intersectionResults;
         return result;
+    };
+
+    World.prototype.getIntersectionWithPlane = function (direction, plane) {
+        var ray = new THREE.Ray(this.camera.position, direction);
+        return ray.intersectPlane(plane);
+    };
+
+    World.prototype.unproject = function (vFar) {
+        return this.projector.unprojectVector(vFar.clone(), this.camera);
     };
 
     return World;

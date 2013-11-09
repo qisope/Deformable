@@ -23,7 +23,6 @@ define(['mods/deformables/node', 'mods/deformables/spring', 'mods/utils/geometry
         var index = this.springs.indexOf(spring);
         if (index >= 0) {
             this.springs.splice(index, 1);
-            console.log('remove spring ' + index);
         }
     };
 
@@ -106,8 +105,13 @@ define(['mods/deformables/node', 'mods/deformables/spring', 'mods/utils/geometry
     };
 
     DeformableObject.prototype.updateRenderMesh = function () {
-        this.renderMesh.geometry.verticesNeedUpdate = true;
+        this.renderMesh.geometry.computeCentroids();
+        this.renderMesh.geometry.computeFaceNormals();
+        this.renderMesh.geometry.computeVertexNormals();
         this.renderMesh.geometry.computeBoundingSphere();
+
+        this.renderMesh.geometry.verticesNeedUpdate = true;
+        this.renderMesh.geometry.normalsNeedUpdate = true;
     };
 
     DeformableObject.prototype.attachExternalSpring = function (nodeId, stiffness, damping) {

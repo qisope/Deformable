@@ -12,9 +12,9 @@ define(['jquery'], function ($, World) {
         this.height = $domElement.height();
 
         var instance = this;
-        $domElement.on('mousedown', function(e) { instance.mouseDown = e; });
-        $domElement.on('mouseup', function(e) { instance.mouseUp = e; });
-        $domElement.on('mousemove', function(e) { instance.mouseMove = e; });
+        $domElement.on('mousedown', function(e) { e.preventDefault(); instance.mouseDown = e; });
+        $domElement.on('mouseup', function(e) { e.preventDefault(); instance.mouseUp = e; });
+        $domElement.on('mousemove', function(e) { e.preventDefault(); instance.mouseMove = e; });
     };
 
     Simulation.prototype.run = function () {
