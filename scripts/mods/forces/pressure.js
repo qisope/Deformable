@@ -1,4 +1,4 @@
-define([], function () {
+define(['mods/utils/geometryUtils'], function (geometryUtils) {
     var PressureForce = function (pressureConstant, shape, mesh) {
         this.pressureConstant = pressureConstant;
         this.shape = shape;
@@ -6,7 +6,7 @@ define([], function () {
     };
 
     PressureForce.prototype.apply = function () {
-        var volume = this.mesh.getVolume();
+        var volume = geometryUtils.getVolume(this.mesh);
         if (volume <= 0)
             return;
 

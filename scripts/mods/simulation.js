@@ -11,47 +11,43 @@ define(['jquery'], function ($, World) {
         this.width = $domElement.width();
         this.height = $domElement.height();
 
-        var that = this;
-        $domElement.on('mousemove', function (e) { that.onMouseMove(e); });
+        var instance = this;
+        $domElement.on('mousedown', function(e) { instance.mouseDown = e; });
+        $domElement.on('mouseup', function(e) { instance.mouseUp = e; });
+        $domElement.on('mousemove', function(e) { instance.mouseMove = e; });
 
         this.projector = new THREE.Projector();
     };
-
-    Simulation.prototype.onMouseMove = function () {
-        this.mouseFar = new THREE.Vector3((event.clientX / this.width) * 2 - 1, 1 - (event.clientY / this.height) * 2, 1);
-    };
-
-    Simulation.prototype.processIntersections = null;
 
     Simulation.prototype.run = function () {
         if (this.running)
             return;
 
         this.running = true;
-        var that = this;
+        var instance = this;
         var stepSizeMs = 6;
         var lastRemainderMs = 0;
 
         window.requestAnimationFrame(function renderLoop(timeMs) {
 
-            if (that.running) {
+            if (instance.running) {
                 window.requestAnimationFrame(renderLoop);
 
-                var frameTimeMs = timeMs - (that.previousFrameTimeMs || timeMs) + lastRemainderMs;
-                that.previousFrameTimeMs = timeMs;
+                var frameTimeMs = timeMs - (instance.previousFrameTimeMs || timeMs) + lastRemainderMs;
+                instance.previousFrameTimeMs = timeMs;
 
                 var steps = Math.floor(frameTimeMs / stepSizeMs);
                 lastRemainderMs = frameTimeMs % stepSizeMs;
 
-                that.processMouse();
+                instance.processMouse();
 
                 for (var i=0; i<steps; i++) {
-                    var stepTimeMs = that.previousFrameTimeMs + stepSizeMs*i;
+                    var stepTimeMs = instance.previousFrameTimeMs + stepSizeMs*i;
                     var td = stepSizeMs / 1000;
-                    that.world.step(td);
+                    instance.world.step(td);
                 }
 
-                that.world.render();
+                instance.world.render();
             }
         });
     };
@@ -61,22 +57,38 @@ define(['jquery'], function ($, World) {
         delete this.previousFrameTimeMs;
     };
 
-    Simulation.prototype.processMouse = function () {
-        if (!this.mouseFar) {
-            return;
-        }
+    Simulation.prototype.onMouseDown = null;
+    Simulation.prototype.onMouseUp = null;
+    Simulation.prototype.onMouseMove = null;
 
-        var pFar = this.projector.unprojectVector(this.mouseFar.clone(), this.world.camera);
+    Simulation.prototype.processMouse = function () {
+        this.processMouseEvents(this.onMouseDown, this.mouseDown);
+        this.processMouseEvents(this.onMouseUp, this.mouseUp);
+        this.processMouseEvents(this.onMouseMove, this.mouseMove);
+
+        this.mouseDown = null;
+        this.mouseUp = null;
+        this.mouseMove = null;
+    };
+
+    Simulation.prototype.processMouseEvents = function (handler, e) {
+        if (handler && e) {
+            var vFar = getMouseFar(e);
+            var intersections = getInersections(vFar);
+            handler(intersections);
+        }
+    };
+
+    Simulation.prototype.getMouseFar = function (event) {
+        return new THREE.Vector3((event.clientX / this.width) * 2 - 1, 1 - (event.clientY / this.height) * 2, 1)
+    };
+
+    Simulation.prototype.getInersections = function (vFar) {
+        var pFar = this.projector.unprojectVector(vFar.clone(), this.world.camera);
         var direction = pFar.sub(this.world.camera.position).normalize();
         var rc = new THREE.Raycaster(this.world.camera.position, direction);
 
-        var newIntersections = rc.intersectObjects(this.world.scene.children, false);
-
-        if (this.processIntersections) {
-            this.processIntersections(this.intersections, newIntersections);
-        }
-
-        this.intersections = newIntersections;
+        return rc.intersectObjects(this.world.scene.children, false); // TODO not use scene.children
     };
 
     return Simulation;

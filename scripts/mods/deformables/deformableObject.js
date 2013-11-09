@@ -1,4 +1,4 @@
-define(['mods/deformables/node', 'mods/deformables/spring'], function (Node, Spring) {
+define(['mods/deformables/node', 'mods/deformables/spring', 'mods/utils/geometryUtils'], function (Node, Spring, geometryUtils) {
 
     var DeformableObject = function (surfaceStiffness, surfaceDamping, connectiveStiffness, connectiveDamping) {
         this.surfaceStiffness = surfaceStiffness;
@@ -41,7 +41,7 @@ define(['mods/deformables/node', 'mods/deformables/spring'], function (Node, Spr
     };
 
     DeformableObject.prototype.createSurfaceSprings = function (mesh, nodes) {
-        var edges = mesh.findEdges();
+        var edges = geometryUtils.findEdges(mesh);
         var springs = []
 
         for (var i = 0, il = edges.length; i < il; i++) {
@@ -101,14 +101,6 @@ define(['mods/deformables/node', 'mods/deformables/spring'], function (Node, Spr
     };
 
     DeformableObject.prototype.updateRenderMesh = function () {
-        for (var i = 0, il = this.outerMesh.vertices.length; i < il; i++) {
-            var dataVertex = this.outerMesh.vertices[i];
-            var renderVertex = this.renderMesh.geometry.vertices[i];
-            renderVertex.x = dataVertex.x;
-            renderVertex.y = dataVertex.y;
-            renderVertex.z = dataVertex.z;
-        }
-
         this.renderMesh.geometry.verticesNeedUpdate = true;
         this.renderMesh.geometry.computeBoundingSphere();
     };

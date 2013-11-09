@@ -1,20 +1,14 @@
 define(['mods/meshes/mesh'], function (Mesh) {
 
-    var Icosphere = function (radius, refinements) {
+    var IcosphereGeometry = function (radius, refinements) {
         this.radius = radius;
         this.refinements = refinements;
 
-        Mesh.call(this);
-        this.vertices = [];
-        this.faces = [];
         this.middlePointCache = {};
-
-        this.createIcosahedron();
+        this.mesh = new Mesh();
     };
 
-    Icosphere.prototype = Object.create(Mesh.prototype);
-
-    Icosphere.prototype.createIcosahedron = function () {
+    IcosphereGeometry.prototype.create = function () {
         var t = (1 + Math.sqrt(5)) / 2;
 
         this.addVertex(new THREE.Vector3(-1, t, 0));
@@ -59,9 +53,11 @@ define(['mods/meshes/mesh'], function (Mesh) {
         faces.push(new THREE.Face3(9, 8, 1));
 
         this.refine(faces);
+
+        return this.mesh.toThreeJsGeometry();
     };
 
-    Icosphere.prototype.refine = function (faces) {
+    IcosphereGeometry.prototype.refine = function (faces) {
 
         for (var i = 0; i < this.refinements; i++) {
             var faces2 = []
@@ -82,25 +78,25 @@ define(['mods/meshes/mesh'], function (Mesh) {
         }
 
         for (var i = 0; i < faces.length; i++) {
-            this.addFace(faces[i]);
+            this.mesh.addFace(faces[i]);
         }
     };
 
-    Icosphere.prototype.addVertex = function (vertex) {
+    IcosphereGeometry.prototype.addVertex = function (vertex) {
         var length = Math.sqrt(vertex.x * vertex.x + vertex.y * vertex.y + vertex.z * vertex.z) / this.radius;
-        Mesh.prototype.addVertex.call(this, new THREE.Vector3(vertex.x/length, vertex.y/length, vertex.z/length));
-        return this.vertices.length-1;
+        this.mesh.addVertex(new THREE.Vector3(vertex.x/length, vertex.y/length, vertex.z/length));
+        return this.mesh.vertices.length-1;
     };
 
-    Icosphere.prototype.getMiddlePoint = function (v1, v2) {
+    IcosphereGeometry.prototype.getMiddlePoint = function (v1, v2) {
 
         var key = v1 <= v2 ? (v1 + '-' + v2) : (v2 + '-' + v1);
         if (this.middlePointCache[key]) {
             return this.middlePointCache[key];
         }
 
-        var vertex1 = this.vertices[v1];
-        var vertex2 = this.vertices[v2];
+        var vertex1 = this.mesh.vertices[v1];
+        var vertex2 = this.mesh.vertices[v2];
         var middle = new THREE.Vector3(
             (vertex1.x + vertex2.x) / 2,
             (vertex1.y + vertex2.y) / 2,
@@ -111,5 +107,5 @@ define(['mods/meshes/mesh'], function (Mesh) {
         return v3;
     };
 
-    return Icosphere;
+    return IcosphereGeometry;
 });

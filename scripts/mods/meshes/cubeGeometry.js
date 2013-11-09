@@ -1,6 +1,6 @@
 define(['mods/meshes/mesh'], function (Mesh) {
 
-    var Cube = function (x, y, z, xf, yf, zf) {
+    var CubeGeometry = function (x, y, z, xf, yf, zf) {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -8,16 +8,10 @@ define(['mods/meshes/mesh'], function (Mesh) {
         this.yf = yf;
         this.zf = zf;
 
-        Mesh.call(this);
-        this.vertices = [];
-        this.faces = [];
-
-        this.createCube();
+        this.mesh = new Mesh();
     };
 
-    Cube.prototype = Object.create(Mesh.prototype);
-
-    Cube.prototype.createCube = function () {
+    CubeGeometry.prototype.create = function () {
         var vertexCache = {};
         var that = this;
 
@@ -33,9 +27,11 @@ define(['mods/meshes/mesh'], function (Mesh) {
         this.buildFace(0, this.yf, 1, -1, this.xf, this.yf, function (u, v) { return that.getVertex(v, u, that.zf, vertexCache); });
         //back
         this.buildFace(this.xf, this.yf, -1, -1, this.xf, this.zf, function (u, v) { return that.getVertex(v, u, 0, vertexCache); });
+
+        return this.mesh.toThreeJsGeometry();
     };
 
-    Cube.prototype.buildFace = function (u0, v0, ui, vi, us, vs, getVertex) {
+    CubeGeometry.prototype.buildFace = function (u0, v0, ui, vi, us, vs, getVertex) {
         for (var i = 0, u = u0; i < us; i++, u += ui) {
             for (var j = 0, v = v0; j < vs; j++, v += vi) {
                 var v1 = getVertex(u, v);
@@ -43,31 +39,24 @@ define(['mods/meshes/mesh'], function (Mesh) {
                 var v3 = getVertex(u + ui, v + vi);
                 var v4 = getVertex(u, v + vi);
 
-                this.faces.push(new THREE.Face3(v1, v2, v3));
-                this.faces.push(new THREE.Face3(v1, v3, v4));
+                this.mesh.faces.push(new THREE.Face3(v1, v2, v3));
+                this.mesh.faces.push(new THREE.Face3(v1, v3, v4));
             }
         }
     };
 
-    Cube.prototype.getVertex = function (x, y, z, vertexCache) {
+    CubeGeometry.prototype.getVertex = function (x, y, z, vertexCache) {
         var key = x + "," + y + "," + z;
         var vi = vertexCache[key];
         if (vi === undefined) {
             var vertex = new THREE.Vector3(-this.x / 2 + this.x * x / this.xf, - this.y / 2 + this.y * y / this.yf, -this.z / 2 + this.z * z / this.zf);
-            this.vertices.push(vertex);
-            vi = this.vertices.length - 1;
+            this.mesh.vertices.push(vertex);
+            vi = this.mesh.vertices.length - 1;
             vertexCache[key] = vi;
         }
 
         return vi;
     };
 
-    var Face4 = function (v1, v2, v3, v4) {
-        this.v1 = v1;
-        this.v2 = v2;
-        this.v3 = v3;
-        this.v4 = v4;
-    };
-
-    return Cube;
+    return CubeGeometry;
 });

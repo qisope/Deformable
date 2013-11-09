@@ -2,13 +2,13 @@ define([
     'mods/deformables/deformableObject',
     'mods/deformables/node',
     'mods/deformables/spring',
-    'mods/meshes/icosphere',
+    'mods/meshes/icosphereGeometry',
     'mods/forces/pressure'],
     function (
         DeformableObject,
         Node,
         Spring,
-        Icosphere,
+        IcosphereGeometry,
         PressureForce) {
 
         var DeformableSphere = function (
@@ -45,8 +45,8 @@ define([
         DeformableSphere.prototype = Object.create(DeformableObject.prototype);
 
         DeformableSphere.prototype.makeDeformable = function () {
-            this.outerMesh = new Icosphere(this.outerRadius, this.refinements);
-            this.innerMesh = new Icosphere(this.innerRadius, this.refinements);
+            this.outerMesh = new IcosphereGeometry(this.outerRadius, this.refinements).create();
+            this.innerMesh = new IcosphereGeometry(this.innerRadius, this.refinements).create();
 
             this.outerNodes = DeformableObject.prototype.createNodes.call(this, this.outerMesh, this.vertexMass);
             this.innerNodes = DeformableObject.prototype.createNodes.call(this, this.innerMesh, this.vertexMass);
@@ -74,8 +74,7 @@ define([
                 DeformableObject.prototype.addSpring.call(this, allSprings[i]);
             }
 
-            var geometry = this.outerMesh.toThreeJsGeometry();
-            this.renderMesh = new THREE.Mesh(geometry, this.material);
+            this.renderMesh = new THREE.Mesh(this.outerMesh, this.material);
 
         };
 

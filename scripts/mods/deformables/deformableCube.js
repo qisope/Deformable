@@ -2,13 +2,13 @@ define([
     'mods/deformables/deformableObject',
     'mods/deformables/node',
     'mods/deformables/spring',
-    'mods/meshes/cube',
+    'mods/meshes/cubeGeometry',
     'mods/forces/pressure'],
     function (
         DeformableObject,
         Node,
         Spring,
-        Cube,
+        CubeGeometry,
         PressureForce) {
 
         var DeformableCube = function (
@@ -43,8 +43,8 @@ define([
         DeformableCube.prototype = Object.create(DeformableObject.prototype);
 
         DeformableCube.prototype.makeDeformable = function () {
-            this.outerMesh = new Cube(this.outerSize.x, this.outerSize.y, this.outerSize.z, this.vertexCount.x, this.vertexCount.y, this.vertexCount.z);
-            this.innerMesh = new Cube(this.innerSize.x, this.innerSize.y, this.innerSize.z, this.vertexCount.x, this.vertexCount.y, this.vertexCount.z);
+            this.outerMesh = new CubeGeometry(this.outerSize.x, this.outerSize.y, this.outerSize.z, this.vertexCount.x, this.vertexCount.y, this.vertexCount.z).create();
+            this.innerMesh = new CubeGeometry(this.innerSize.x, this.innerSize.y, this.innerSize.z, this.vertexCount.x, this.vertexCount.y, this.vertexCount.z).create();
 
             this.outerNodes = DeformableObject.prototype.createNodes.call(this, this.outerMesh, this.vertexMass);
             this.innerNodes = DeformableObject.prototype.createNodes.call(this, this.innerMesh, this.vertexMass);
@@ -72,8 +72,7 @@ define([
                 DeformableObject.prototype.addSpring.call(this, allSprings[i]);
             }
 
-            var geometry = this.outerMesh.toThreeJsGeometry();
-            this.renderMesh = new THREE.Mesh(geometry, this.material);
+            this.renderMesh = new THREE.Mesh(this.outerMesh, this.material);
 
         };
 
