@@ -80,7 +80,7 @@ define(['mods/deformables/node', 'mods/deformables/spring', 'mods/utils/geometry
             this.springs[i].apply();
         }
 
-        for (var i = 0; i < this.pressureForces.length; i++) {
+        for (var i = 0, il = this.pressureForces.length; i < il; i++) {
             this.pressureForces[i].apply();
         }
 
@@ -101,6 +101,15 @@ define(['mods/deformables/node', 'mods/deformables/spring', 'mods/utils/geometry
         this.renderMesh.geometry.verticesNeedUpdate = true;
         this.renderMesh.geometry.computeBoundingSphere();
     };
+
+    DeformableObject.prototype.attachExternalSpring = function (nodeId, stiffness, damping) {
+        var fakeMesh = {vertices: [this.outerNodes[nodeId].getPosition()]};
+        var externalNode = new Node(fakeMesh, 0, 1);
+        var externalSpring = new Spring(externalNode, this.outerNodes[nodeId], stiffness, damping);
+
+        this.addSpring(externalSpring);
+        return externalSpring;
+    }
 
     return DeformableObject;
 

@@ -16,11 +16,15 @@ define(['mods/integrators/symEuler', 'mods/forces/gravity'], function (SymEuler,
 
         this.integrator = new SymEuler();
 
+        this.meshes = [];
         this.objects = [];
         this.forces = [];
+        this.objectsByMeshId = {};
 
         this.gravity = new Gravity(new THREE.Vector3(0, 0, 0));
         this.forces.push(this.gravity);
+
+        this.projector = new THREE.Projector();
     };
 
     World.prototype.getDomElement = function () {
@@ -45,7 +49,9 @@ define(['mods/integrators/symEuler', 'mods/forces/gravity'], function (SymEuler,
     World.prototype.addObject = function (object) {
         var renderMesh = object.getRenderMesh();
         this.scene.add(renderMesh);
+        this.meshes.push(renderMesh);
         this.objects.push(object);
+        this.objectsByMeshId[renderMesh.uuid] = object;
     };
 
     World.prototype.setGravity = function (x, y, z) {
@@ -60,6 +66,29 @@ define(['mods/integrators/symEuler', 'mods/forces/gravity'], function (SymEuler,
         for (var i = 0; i < this.objects.length; i++) {
             this.objects[i].step(this.forces, this.integrator, dt);
         }
+    };
+
+    World.prototype.getInersections = function (vFar) {
+        var pFar = this.projector.unprojectVector(vFar.clone(), this.camera);
+        var direction = pFar.sub(this.camera.position).normalize();
+        var rc = new THREE.Raycaster(this.camera.position, direction);
+
+        var intersections = rc.intersectObjects(this.meshes, false);
+        var result = [];
+
+        if (intersections && intersections.length) {
+            for (var i=0, il=intersections.length; i<il; i++) {
+                var intersection = intersections[i];
+                var object = this.objectsByMeshId[intersection.object.uuid]; // intersection.object is in fact our mesh
+                if (object) {
+                    result.push({ object: object, intersection: intersection });
+                }
+            }
+
+            return result;
+        }
+
+        return intersections;
     };
 
     return World;

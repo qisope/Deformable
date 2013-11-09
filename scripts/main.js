@@ -33,13 +33,16 @@ require(
 
             _world.addObject(sphere);
             _world.addObject(cube);
+
+            cube.attachExternalSpring(0, 1000, 3);
+            sphere.attachExternalSpring(0, 800, 10);
         };
 
         var setUpActions = function () {
             var objectGrabber = new ObjectGrabber();
 
             _simulation.onMouseDown = function (intersections) {
-                objectGrabber.grab();
+                objectGrabber.grab(intersections);
             };
 
             _simulation.onMouseUp = function (intersections) {

@@ -15,8 +15,6 @@ define(['jquery'], function ($, World) {
         $domElement.on('mousedown', function(e) { instance.mouseDown = e; });
         $domElement.on('mouseup', function(e) { instance.mouseUp = e; });
         $domElement.on('mousemove', function(e) { instance.mouseMove = e; });
-
-        this.projector = new THREE.Projector();
     };
 
     Simulation.prototype.run = function () {
@@ -71,24 +69,16 @@ define(['jquery'], function ($, World) {
         this.mouseMove = null;
     };
 
-    Simulation.prototype.processMouseEvents = function (handler, e) {
-        if (handler && e) {
-            var vFar = getMouseFar(e);
-            var intersections = getInersections(vFar);
+    Simulation.prototype.processMouseEvents = function (handler, mouseEvent) {
+        if (handler && mouseEvent) {
+            var vFar = this.getMouseFar(mouseEvent);
+            var intersections = this.world.getInersections(vFar);
             handler(intersections);
         }
     };
 
-    Simulation.prototype.getMouseFar = function (event) {
-        return new THREE.Vector3((event.clientX / this.width) * 2 - 1, 1 - (event.clientY / this.height) * 2, 1)
-    };
-
-    Simulation.prototype.getInersections = function (vFar) {
-        var pFar = this.projector.unprojectVector(vFar.clone(), this.world.camera);
-        var direction = pFar.sub(this.world.camera.position).normalize();
-        var rc = new THREE.Raycaster(this.world.camera.position, direction);
-
-        return rc.intersectObjects(this.world.scene.children, false); // TODO not use scene.children
+    Simulation.prototype.getMouseFar = function (mouseEvent) {
+        return new THREE.Vector3((mouseEvent.offsetX / this.width) * 2 - 1, 1 - (mouseEvent.offsetY / this.height) * 2, 1)
     };
 
     return Simulation;

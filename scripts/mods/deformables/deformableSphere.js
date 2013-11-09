@@ -55,16 +55,8 @@ define([
             this.innerSprings = DeformableObject.prototype.createSurfaceSprings.call(this, this.innerMesh, this.innerNodes);
             this.connectiveSprings = DeformableObject.prototype.createConnectiveSprings.call(this, this.outerMesh, this.innerMesh, this.outerNodes, this.innerNodes);
 
-            //------- hackery
-
-            var fakeMesh = {vertices: [this.outerMesh.vertices[0].clone()]};
-            var lockedNode = new Node(fakeMesh, 0, 1);
-            var face = this.outerMesh.faces[0];
-            var lockedSprings = [new Spring(lockedNode, this.outerNodes[face.c], 800, 10)];
-            //-------
-
             var allNodes = this.outerNodes.concat(this.innerNodes);
-            var allSprings = this.outerSprings.concat(this.innerSprings, this.connectiveSprings, lockedSprings);
+            var allSprings = this.outerSprings.concat(this.innerSprings, this.connectiveSprings);
 
             for (var i = 0, il = allNodes.length; i < il; i++) {
                 DeformableObject.prototype.addNode.call(this, allNodes[i]);
