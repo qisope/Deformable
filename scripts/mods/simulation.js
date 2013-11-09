@@ -73,7 +73,7 @@ define(['jquery'], function ($, World) {
         if (handler && mouseEvent) {
             var vFar = this.getMouseFar(mouseEvent);
             var intersections = this.world.getInersections(vFar);
-            handler(intersections);
+            handler(intersections, mouseEvent);
         }
     };
 

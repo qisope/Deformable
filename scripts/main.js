@@ -41,12 +41,16 @@ require(
         var setUpActions = function () {
             var objectGrabber = new ObjectGrabber();
 
-            _simulation.onMouseDown = function (intersections) {
+            _simulation.onMouseDown = function (intersections, mouseEvent) {
                 objectGrabber.grab(intersections);
             };
 
-            _simulation.onMouseUp = function (intersections) {
+            _simulation.onMouseUp = function (intersections, mouseEvent) {
                 objectGrabber.release();
+            };
+
+            _simulation.onMouseMove = function (intersections, mouseEvent) {
+                objectGrabber.move(intersections, mouseEvent);
             };
         };
 

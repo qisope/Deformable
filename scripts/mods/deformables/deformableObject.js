@@ -19,6 +19,14 @@ define(['mods/deformables/node', 'mods/deformables/spring', 'mods/utils/geometry
         this.springs.push(spring);
     };
 
+    DeformableObject.prototype.removeSpring = function (spring) {
+        var index = this.springs.indexOf(spring);
+        if (index >= 0) {
+            this.springs.splice(index, 1);
+            console.log('remove spring ' + index);
+        }
+    };
+
     DeformableObject.prototype.addPressureForce = function (pressureForce) {
         this.pressureForces.push(pressureForce);
     };

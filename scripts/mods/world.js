@@ -84,11 +84,9 @@ define(['mods/integrators/symEuler', 'mods/forces/gravity'], function (SymEuler,
                     result.push({ object: object, intersection: intersection });
                 }
             }
-
-            return result;
         }
 
-        return intersections;
+        return result;
     };
 
     return World;
