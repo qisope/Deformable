@@ -27,9 +27,6 @@ define(['mods/deformables/node', 'mods/deformables/spring', 'mods/utils/geometry
         return this.renderMesh;
     };
 
-    DeformableObject.prototype.updateRenderMesh = function () {
-    };
-
     DeformableObject.prototype.createNodes = function (mesh, vertexMass) {
         var nodes = [];
         for (var i = 0, il = mesh.vertices.length; i < il; i++) {
