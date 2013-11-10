@@ -6,13 +6,6 @@ define([], function() {
 		this.attachment = null;
 	};
 
-/*
-to support moving the spring
-determine a plane about which we will move the end of the spring as the mouse moves, possible just z=constant
-plane defined by initial intersection point and some other random point
-as mouse moves, perform intersections against this plane to getermine the position of the external spring node
-*/
-
 	ObjectGrabber.prototype.grab = function (data) {
 		this.release();
 

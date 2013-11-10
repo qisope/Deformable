@@ -15,6 +15,20 @@ define(['jquery'], function ($, World) {
         $domElement.on('mousedown', function(e) { e.preventDefault(); instance.mouseDown = e; });
         $domElement.on('mouseup', function(e) { e.preventDefault(); instance.mouseUp = e; });
         $domElement.on('mousemove', function(e) { e.preventDefault(); instance.mouseMove = e; });
+
+        $(window).on('blur', function () {
+            if (instance.running) {
+                instance.stop();
+                instance.pauseed = true;
+            }
+        });
+
+        $(window).on('focus', function () {
+            if (instance.pauseed) {
+                instance.run();
+                instance.pauseed = false;
+            }
+        });
     };
 
     Simulation.prototype.run = function () {
