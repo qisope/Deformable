@@ -1,26 +1,46 @@
 <html>
 <head>
-    <title>Soft</title>
+    <title>Deformables!</title>
     <script src="scripts/libs/three.js" ></script>
     <script data-main="scripts/main" src="require.js" ></script>
 </head>
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<style type="text/css">
+	body {
+		background-color: black;
+		color: white;
+		padding: 10px;
+	}
+
+	#container {
+		margin: 10px;
+	}
+
+	#container > canvas {
+		-webkit-box-shadow: 0px 0px 20px rgba(255, 255, 255, 0.5);
+		-moz-box-shadow:    0px 0px 20px rgba(255, 255, 255, 0.5);
+		box-shadow:         0px 0px 20px rgba(255, 255, 255, 0.5);
+	}
+</style>
 <body>
 	<div style="border-bottom: solid silver 1px; margin-bottom: 12px;">
-		<button id='js-btn-run'>Run</button>
-		<button id='js-btn-stop'>Stop</button>
-		|
-		<button id='js-gravity-off'>Gravity Off</button>
-		<button id='js-gravity-on'>Gravity On</button>
+		<p>
+			<button id="js-btn-run" class="btn btn-default">Run</button>
+			<button id="js-btn-stop" class="btn btn-default">Stop</button>
+			|
+			<button id="js-gravity-off" class="btn btn-default">Gravity Off</button>
+			<button id="js-gravity-on" class="btn btn-default">Gravity On</button>
+		</p>
 	</div>
 	<div id="container"></div>
 	<div>
 		<ul>
-			<li>Make data meshes and rendre meshes just be the same thing, no extra update</li>
-			<li>Use three.js icosphere?</li>
-			<li>On mouse down create spring between mouse location and closest node, delete on mouse up</li>
-			<li>Choose a BHV approach for collisions</li>
-			<li>Web workers</li>
 			<li>Air resistence</li>
+			<li>Better object grabbing</li>
+			<li>Pause simulation when tab not active</li>
+			<li>If too many frames missed, don't try to render up to current time</li>
+			<li>Web workers</li>
+			<li>Choose a BVH approach for collisions</li>
 		</ul>
 	</div>
 </body>

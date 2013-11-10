@@ -29,6 +29,27 @@ define(['mods/utils/geometryUtils'], function (geometryUtils) {
             nodeA.addForce(vertexForce);
             nodeB.addForce(vertexForce);
             nodeC.addForce(vertexForce);
+
+            var velocity1 = nodeA.getVelocity();
+            var velocity2 = nodeB.getVelocity();
+            var velocity3 = nodeC.getVelocity();
+
+            var velocity = velocity1.add(velocity2).add(velocity3);
+            velocity.divideScalar(3);
+
+            var airResistance = 0.002;
+
+            var fx = velocity.x*velocity.x * airResistance * area;
+            var fy = velocity.y*velocity.y * airResistance * area;
+            var fz = velocity.z*velocity.z * airResistance * area;
+
+            var resistanceForceMagnitude = new THREE.Vector3(fx, fy, fz).length();
+
+            velocity.normalize().negate().multiplyScalar(resistanceForceMagnitude).divideScalar(3);
+
+            nodeA.addForce(velocity);
+            nodeB.addForce(velocity);
+            nodeC.addForce(velocity);
         }
     };
 
