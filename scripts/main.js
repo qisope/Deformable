@@ -15,17 +15,17 @@ require(
         var setUpWorld = function(){
             _world.setCamera(110, 0, 110, 0, 0, 0);
             _world.addLight(500, 500, 500, 0xFFFFFF);
-            _world.addLight(-500, 000, 500, 0x888888);
+            _world.addLight(-500, 200, 500, 0x888888);
             _world.setGravity(0, -10, 0);
         };
 
         var createObjects = function() {
             var objectFactory = new ObjectFactory();
 
-            var material1 = new THREE.MeshPhongMaterial({ color: 0xFF0000, wireframe: true, vertexColors: THREE.FaceColors });
-            var material2 = new THREE.MeshPhongMaterial({ color: 0x00FF00, wireframe: true, vertexColors: THREE.FaceColors });
+            var material1 = new THREE.MeshPhongMaterial({ color: 0xFF0000, wireframe: true });
+            var material2 = new THREE.MeshPhongMaterial({ color: 0x00FF00, wireframe: true });
 
-            var sphere = objectFactory.createSphere(25, 10, 2, 1, 2000, 10, 1000, 2, 50000, 50000, material1);
+            var sphere = objectFactory.createSphere(25, 3, 2, 1, 1000, 10, 1000, 2, 10000, 10000, material1);
             var cube = objectFactory.createCube({x:20, y:20, z:20}, {x:10, y:10, z:10}, {x:6, y:6, z:6}, 2.0, 200, 50, 85, 20, 100000, 100000, material2);
 
             sphere.renderMesh.position = new THREE.Vector3(-90, 50, 0);
@@ -34,8 +34,8 @@ require(
             _world.addObject(sphere);
             _world.addObject(cube);
 
+            sphere.attachExternalSpring(0, 5000, 8);
             cube.attachExternalSpring(0, 1000, 8);
-            sphere.attachExternalSpring(0, 1000, 8);
         };
 
         var setUpActions = function () {
