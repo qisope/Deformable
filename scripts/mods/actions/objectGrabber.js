@@ -34,14 +34,14 @@ define([], function() {
 		var externalNode = this.attachment.spring.node1;
 		var objectNode = this.attachment.spring.node2;
 
+		var objectMatrix = this.attachment.object.getMatrix();
 		var ray = data.ray;
-		var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(ray, objectNode.getPosition());
+		var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(ray, objectNode.getPosition().applyMatrix4(objectMatrix));
 
 		var intersection = this.world.getIntersectionWithPlane(ray, plane);
 		if (!intersection)
 			return;
 
-		var objectMatrix = this.attachment.object.getMatrix();
 		intersection.applyMatrix4(new THREE.Matrix4().getInverse(objectMatrix));
 		externalNode.setPosition(intersection);
 	};
