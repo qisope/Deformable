@@ -11,6 +11,10 @@ define(['mods/deformables/node', 'mods/deformables/spring', 'mods/utils/geometry
         this.pressureForces = [];
     };
 
+    DeformableObject.prototype.getMatrix = function () {
+        return this.renderMesh.matrix.clone();
+    };
+
     DeformableObject.prototype.addNode = function (node) {
         this.nodes.push(node);
     };
@@ -116,6 +120,8 @@ define(['mods/deformables/node', 'mods/deformables/spring', 'mods/utils/geometry
 
     DeformableObject.prototype.attachExternalSpring = function (nodeId, stiffness, damping) {
         var fakeMesh = {vertices: [this.outerNodes[nodeId].getPosition()]};
+        fakeMesh.matrix = this.renderMesh.matrix.clone();
+
         var externalNode = new Node(fakeMesh, 0, 1);
         var externalSpring = new Spring(externalNode, this.outerNodes[nodeId], stiffness, damping);
 

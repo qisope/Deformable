@@ -41,12 +41,15 @@ define([], function() {
 		if (!intersection)
 			return;
 
+		var objectMatrix = this.attachment.object.getMatrix();
+		intersection.applyMatrix4(new THREE.Matrix4().getInverse(objectMatrix));
 		externalNode.setPosition(intersection);
 	};
 
 	ObjectGrabber.prototype.release = function () {
 		if (this.attachment) {
 			this.attachment.object.removeSpring(this.attachment.spring);
+			this.world.scene.remove(this.attachment.arrow);
 			this.attachment = null;
 		}
 	};

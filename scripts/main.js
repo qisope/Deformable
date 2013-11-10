@@ -9,13 +9,13 @@ require(
     ['mods/simulation', 'mods/world', 'mods/objectFactory', 'mods/actions/objectGrabber'],
     function (Simulation, World, ObjectFactory, ObjectGrabber) {
 
-        var _world = new World(600, 600);
+        var _world = new World(700, 600);
         var _simulation = new Simulation('#container', _world);
 
         var setUpWorld = function(){
             _world.setCamera(110, 0, 110, 0, 0, 0);
-            _world.addLight(50, 50, 50, 0xFFFFFF);
-            _world.addLight(-50, 50, 50, 0x888888);
+            _world.addLight(500, 500, 500, 0xFFFFFF);
+            _world.addLight(-500, 000, 500, 0x888888);
             _world.setGravity(0, -10, 0);
         };
 
@@ -23,19 +23,19 @@ require(
             var objectFactory = new ObjectFactory();
 
             var material1 = new THREE.MeshPhongMaterial({ color: 0xFF0000, wireframe: false, vertexColors: THREE.FaceColors });
-            var material2 = new THREE.MeshPhongMaterial({ color: 0x00FF00, wireframe: false, vertexColors: THREE.FaceColors });
+            var material2 = new THREE.MeshPhongMaterial({ color: 0x00FF00, wireframe: true, vertexColors: THREE.FaceColors });
 
-            var sphere = objectFactory.createSphere(12, 6, 2, 0.8, 2000, 10, 15, 2, 50000, 100000, material1);
-            var cube = objectFactory.createCube({x:20, y:20, z:20}, {x:10, y:10, z:10}, {x:6, y:6, z:6}, 3.0, 400, 10, 85, 20, 100000, 100000, material2);
+            var sphere = objectFactory.createSphere(18, 8, 2, 0.8, 2000, 10, 15, 2, 60000, 100000, material1);
+            var cube = objectFactory.createCube({x:20, y:20, z:20}, {x:10, y:10, z:10}, {x:6, y:6, z:6}, 2.0, 200, 50, 85, 20, 100000, 100000, material2);
 
-            sphere.renderMesh.position = new THREE.Vector3(-25, 0, 0);
+            sphere.renderMesh.position = new THREE.Vector3(-90, 50, 0);
             cube.renderMesh.position = new THREE.Vector3(25, 10, 0);
 
             _world.addObject(sphere);
             _world.addObject(cube);
 
-            cube.attachExternalSpring(0, 1000, 3);
-            sphere.attachExternalSpring(0, 800, 10);
+            cube.attachExternalSpring(0, 1000, 8);
+            sphere.attachExternalSpring(0, 1000, 8);
         };
 
         var setUpActions = function () {
