@@ -22,10 +22,10 @@ require(
         var createObjects = function() {
             var objectFactory = new ObjectFactory();
 
-            var material1 = new THREE.MeshPhongMaterial({ color: 0xFF0000, wireframe: true });
-            var material2 = new THREE.MeshPhongMaterial({ color: 0x00FF00, wireframe: true });
+            var material1 = new THREE.MeshPhongMaterial({ color: 0xFF0000, wireframe: false });
+            var material2 = new THREE.MeshPhongMaterial({ color: 0x00FF00, wireframe: false });
 
-            var sphere = objectFactory.createSphere(25, 3, 2, 1, 1000, 10, 1000, 2, 10000, 10000, material1);
+            var sphere = objectFactory.createSphere(25, 10, 2, 2, 2000, 10, 1000, 10, 50000, 5000, material1);
             var cube = objectFactory.createCube({x:20, y:20, z:20}, {x:10, y:10, z:10}, {x:6, y:6, z:6}, 2.0, 200, 50, 85, 20, 100000, 100000, material2);
 
             sphere.renderMesh.position = new THREE.Vector3(-90, 50, 0);
@@ -34,7 +34,7 @@ require(
             _world.addObject(sphere);
             _world.addObject(cube);
 
-            sphere.attachExternalSpring(0, 5000, 8);
+            sphere.attachExternalSpring(0, 5000, 80);
             cube.attachExternalSpring(0, 1000, 8);
         };
 

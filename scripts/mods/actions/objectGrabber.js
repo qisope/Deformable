@@ -18,7 +18,7 @@ define([], function() {
 		var nodeId = intersection.intersection.face.a;
 
 		var object = intersection.object;
-		var spring = object.attachExternalSpring(nodeId, 1000, 3);
+		var spring = object.attachExternalSpring(nodeId, 2000, 3);
 
 		this.attachment = {
 			object: object,
@@ -34,9 +34,14 @@ define([], function() {
 		var externalNode = this.attachment.spring.node1;
 		var objectNode = this.attachment.spring.node2;
 
+		this.attachment.object.renderMesh.geometry.computeBoundingSphere();
+		var bounds = this.attachment.object.renderMesh.geometry.boundingSphere;
+		var objectNodePosition = objectNode.getPosition();
+		objectNodePosition.z = bounds.center.z + bounds.radius;
+
 		var objectMatrix = this.attachment.object.getMatrix();
 		var ray = data.ray;
-		var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(ray, objectNode.getPosition().applyMatrix4(objectMatrix));
+		var plane = new THREE.Plane().setFromNormalAndCoplanarPoint(ray, objectNodePosition.applyMatrix4(objectMatrix));
 
 		var intersection = this.world.getIntersectionWithPlane(ray, plane);
 		if (!intersection)

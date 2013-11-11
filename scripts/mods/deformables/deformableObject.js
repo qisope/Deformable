@@ -109,7 +109,6 @@ define(['mods/deformables/node', 'mods/deformables/spring', 'mods/utils/geometry
     };
 
     DeformableObject.prototype.updateRenderMesh = function () {
-        this.renderMesh.geometry.computeCentroids();
         this.renderMesh.geometry.computeFaceNormals();
         this.renderMesh.geometry.computeVertexNormals();
         this.renderMesh.geometry.computeBoundingSphere();

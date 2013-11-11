@@ -1,0 +1,23 @@
+Collision Detection Notes
+
+BVH - Bounded Volume Hierarchy
+
+Build top down or bottom up?
+Approach to subdividing / partitioning mesh while building BVH?
+
+What shape of bounding object?
+ - sphere
+ - ellipsoid
+ - AABB
+ - OABB
+ - swept rectangle?
+
+Rebuild strategy?
+ - always rebuild
+ - partial rebuild (top half of tree?)
+ - use vertex velocity to 'loosen' bounds, rebuild when growth threshold exceeded
+ - rebuild recently visited nodes?
+
+
+Collision Energy
+
